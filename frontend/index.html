@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KisaanAI — Plant Disease Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[#f5f7f0] min-h-screen" id="app-body">
+
+  <!-- Language Toggle Bar -->
+  <div class="lang-bar fixed top-0 left-0 right-0 z-50 flex justify-end items-center px-4 py-2">
+    <button id="lang-toggle" onclick="toggleLanguage()" class="lang-pill flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-300">
+      <span id="lang-icon">🌐</span>
+      <span id="lang-label">नेपाली</span>
+    </button>
+  </div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section id="hero" class="hero-section relative overflow-hidden min-h-screen flex flex-col justify-center items-center text-center px-4 pt-16">
+    <!-- Animated background elements -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+    <div class="leaf-grid" aria-hidden="true"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="badge-pill inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 text-sm font-medium animate-fade-in-up">
+        <span class="dot-pulse"></span>
+        <span data-en="AI-Powered Crop Protection" data-ne="AI-संचालित बाली सुरक्षा">AI-Powered Crop Protection</span>
+      </div>
+
+      <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold leading-none mb-6 animate-fade-in-up delay-1">
+        <span data-en="Heal Your" data-ne="आफ्नो">Heal Your</span><br/>
+        <span class="text-gradient" data-en="Crops." data-ne="बाली बचाउनुस्।">Crops.</span>
+      </h1>
+
+      <p class="hero-sub text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed animate-fade-in-up delay-2" 
+         data-en="Upload a photo of your plant. Our AI identifies diseases instantly and gives you affordable, locally available treatment solutions."
+         data-ne="आफ्नो बिरुवाको फोटो अपलोड गर्नुहोस्। हाम्रो AI तुरुन्त रोग पहिचान गर्छ र स्थानीय रूपमा उपलब्ध सस्तो उपचार समाधान दिन्छ।">
+        Upload a photo of your plant. Our AI identifies diseases instantly and gives you affordable, locally available treatment solutions.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-3">
+        <button onclick="scrollToUpload()" class="cta-primary px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center gap-2 justify-center">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span data-en="Scan Your Plant" data-ne="बाली स्क्यान गर्नुस्">Scan Your Plant</span>
+        </button>
+        <button onclick="scrollToHowItWorks()" class="cta-secondary px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300">
+          <span data-en="How It Works" data-ne="यसले कसरी काम गर्छ">How It Works</span>
+        </button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row flex flex-wrap gap-6 justify-center mt-16 animate-fade-in-up delay-4">
+        <div class="stat-chip px-5 py-3 rounded-2xl flex items-center gap-3">
+          <span class="stat-icon">🌿</span>
+          <div class="text-left">
+            <div class="stat-num font-bold text-xl">50+</div>
+            <div class="stat-label text-xs" data-en="Diseases Detected" data-ne="रोग पहिचान">Diseases Detected</div>
+          </div>
+        </div>
+        <div class="stat-chip px-5 py-3 rounded-2xl flex items-center gap-3">
+          <span class="stat-icon">⚡</span>
+          <div class="text-left">
+            <div class="stat-num font-bold text-xl">&lt;5s</div>
+            <div class="stat-label text-xs" data-en="Analysis Time" data-ne="विश्लेषण समय">Analysis Time</div>
+          </div>
+        </div>
+        <div class="stat-chip px-5 py-3 rounded-2xl flex items-center gap-3">
+          <span class="stat-icon">💰</span>
+          <div class="text-left">
+            <div class="stat-num font-bold text-xl">100%</div>
+            <div class="stat-label text-xs" data-en="Free to Use" data-ne="पूर्णतः निःशुल्क">Free to Use</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <div class="w-6 h-10 rounded-full border-2 border-current flex justify-center pt-2 opacity-40">
+        <div class="w-1 h-3 rounded-full bg-current animate-scroll-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="py-20 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-14">
+        <h2 class="section-title text-3xl md:text-5xl font-bold mb-4" data-en="How It Works" data-ne="यसले कसरी काम गर्छ">How It Works</h2>
+        <p class="section-sub text-base md:text-lg max-w-xl mx-auto" data-en="Three simple steps to protect your harvest" data-ne="आफ्नो फसल बचाउन तीन सरल चरणहरू">Three simple steps to protect your harvest</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="step-card rounded-2xl p-7 flex flex-col gap-4">
+          <div class="step-num">01</div>
+          <div class="step-icon-wrap w-14 h-14 rounded-2xl flex items-center justify-center text-2xl">📸</div>
+          <h3 class="font-bold text-xl" data-en="Upload Photo" data-ne="फोटो अपलोड गर्नुस्">Upload Photo</h3>
+          <p class="text-sm leading-relaxed opacity-70" data-en="Take or upload a clear photo of the affected plant leaves or stems." data-ne="प्रभावित बिरुवाको पात वा डाँठको स्पष्ट फोटो खिच्नुस् वा अपलोड गर्नुस्।">Take or upload a clear photo of the affected plant leaves or stems.</p>
+        </div>
+        <div class="step-card rounded-2xl p-7 flex flex-col gap-4">
+          <div class="step-num">02</div>
+          <div class="step-icon-wrap w-14 h-14 rounded-2xl flex items-center justify-center text-2xl">🧠</div>
+          <h3 class="font-bold text-xl" data-en="AI Analysis" data-ne="AI विश्लेषण">AI Analysis</h3>
+          <p class="text-sm leading-relaxed opacity-70" data-en="Our AI model analyzes your image and identifies the plant, disease, and severity." data-ne="हाम्रो AI मोडेलले तपाईंको फोटो विश्लेषण गरी बिरुवा, रोग र गम्भीरता पहिचान गर्दछ।">Our AI model analyzes your image and identifies the plant, disease, and severity.</p>
+        </div>
+        <div class="step-card rounded-2xl p-7 flex flex-col gap-4">
+          <div class="step-num">03</div>
+          <div class="step-icon-wrap w-14 h-14 rounded-2xl flex items-center justify-center text-2xl">💊</div>
+          <h3 class="font-bold text-xl" data-en="Get Treatment" data-ne="उपचार पाउनुस्">Get Treatment</h3>
+          <p class="text-sm leading-relaxed opacity-70" data-en="Receive affordable local remedies, organic solutions, and prevention tips." data-ne="सस्तो स्थानीय उपचार, जैविक समाधान र रोकथाम सुझावहरू प्राप्त गर्नुस्।">Receive affordable local remedies, organic solutions, and prevention tips.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== UPLOAD SECTION ===== -->
+  <section id="upload-section" class="py-20 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="section-title text-3xl md:text-5xl font-bold mb-4" data-en="Scan Your Plant" data-ne="बाली स्क्यान गर्नुस्">Scan Your Plant</h2>
+        <p class="section-sub text-base md:text-lg" data-en="Upload or capture an image to begin diagnosis" data-ne="निदान सुरु गर्न फोटो अपलोड गर्नुस् वा खिच्नुस्">Upload or capture an image to begin diagnosis</p>
+      </div>
+
+      <!-- Upload Card -->
+      <div class="upload-card rounded-3xl p-2 overflow-hidden">
+        <div id="drop-zone" class="drop-zone rounded-2xl p-12 flex flex-col items-center justify-center gap-5 cursor-pointer transition-all duration-300 relative"
+             ondragover="handleDragOver(event)"
+             ondragleave="handleDragLeave(event)"
+             ondrop="handleDrop(event)"
+             onclick="document.getElementById('file-input').click()">
+          
+          <div id="upload-preview" class="hidden w-full flex-col items-center gap-4">
+            <img id="preview-img" src="" alt="preview" class="max-h-72 rounded-xl object-contain w-full" />
+            <button onclick="clearImage(event)" class="clear-btn px-4 py-2 rounded-xl text-sm font-medium transition-all">
+              <span data-en="Choose different image" data-ne="अर्को फोटो छान्नुस्">Choose different image</span>
+            </button>
+          </div>
+
+          <div id="upload-placeholder" class="flex flex-col items-center gap-5">
+            <div class="upload-icon-ring w-24 h-24 rounded-full flex items-center justify-center">
+              <svg class="w-10 h-10 upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="text-center">
+              <p class="font-semibold text-lg" data-en="Drag & drop or click to upload" data-ne="तान्नुस् वा क्लिक गरी अपलोड गर्नुस्">Drag & drop or click to upload</p>
+              <p class="text-sm opacity-60 mt-1" data-en="JPG, PNG, WEBP — max 10MB" data-ne="JPG, PNG, WEBP — अधिकतम 10MB">JPG, PNG, WEBP — max 10MB</p>
+            </div>
+          </div>
+
+          <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)" />
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 p-4">
+          <button onclick="document.getElementById('file-input').click()" class="flex-1 action-btn-secondary py-3 px-5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span data-en="Upload Image" data-ne="फोटो अपलोड गर्नुस्">Upload Image</span>
+          </button>
+          <button onclick="openCamera()" class="flex-1 action-btn-secondary py-3 px-5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span data-en="Take Photo" data-ne="फोटो खिच्नुस्">Take Photo</span>
+          </button>
+          <button id="analyze-btn" onclick="analyzeImage()" disabled class="flex-1 analyze-btn py-3 px-5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span data-en="Analyze Disease" data-ne="रोग विश्लेषण गर्नुस्">Analyze Disease</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sample images -->
+      <div class="mt-8 text-center">
+        <p class="text-sm opacity-60 mb-4" data-en="Or try with a sample image:" data-ne="वा नमूना फोटोले प्रयास गर्नुस्:">Or try with a sample image:</p>
+        <div class="flex flex-wrap gap-3 justify-center" id="sample-images">
+          <button onclick="loadSample('tomato')" class="sample-btn px-4 py-2 rounded-xl text-sm font-medium transition-all">🍅 <span data-en="Tomato Blight" data-ne="टमाटर ब्लाइट">Tomato Blight</span></button>
+          <button onclick="loadSample('wheat')" class="sample-btn px-4 py-2 rounded-xl text-sm font-medium transition-all">🌾 <span data-en="Wheat Rust" data-ne="गहुँ रस्ट">Wheat Rust</span></button>
+          <button onclick="loadSample('rice')" class="sample-btn px-4 py-2 rounded-xl text-sm font-medium transition-all">🌿 <span data-en="Rice Blast" data-ne="धान ब्लास्ट">Rice Blast</span></button>
+          <button onclick="loadSample('potato')" class="sample-btn px-4 py-2 rounded-xl text-sm font-medium transition-all">🥔 <span data-en="Potato Late Blight" data-ne="आलु लेट ब्लाइट">Potato Late Blight</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOADING OVERLAY ===== -->
+  <div id="loading-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center">
+    <div class="loading-card rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4 text-center">
+      <div class="scan-animation">
+        <div class="scan-circle"></div>
+        <div class="scan-pulse"></div>
+        <div class="scan-inner">🌱</div>
+      </div>
+      <div>
+        <p class="font-bold text-xl mb-2" id="loading-msg" data-en="Analyzing your plant..." data-ne="तपाईंको बाली विश्लेषण गर्दैछ...">Analyzing your plant...</p>
+        <p class="text-sm opacity-60" data-en="This usually takes 3-5 seconds" data-ne="यसमा सामान्यतया ३-५ सेकेन्ड लाग्छ">This usually takes 3-5 seconds</p>
+      </div>
+      <div class="loading-steps flex flex-col gap-2 w-full text-left" id="loading-steps"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SECTION ===== -->
+  <section id="results-section" class="hidden py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Result header -->
+      <div class="result-header-card rounded-3xl p-6 md:p-8 mb-6 flex flex-col md:flex-row gap-6 items-start">
+        <img id="result-img" src="" alt="analyzed plant" class="w-full md:w-48 h-48 object-cover rounded-2xl flex-shrink-0" />
+        <div class="flex-1">
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span id="urgency-badge" class="urgency-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"></span>
+            <span id="confidence-badge" class="confidence-badge px-3 py-1 rounded-full text-xs font-medium"></span>
+          </div>
+          <h2 class="result-disease-name text-2xl md:text-3xl font-extrabold mb-1" id="disease-name"></h2>
+          <p class="result-plant-name text-base font-medium opacity-70 mb-3" id="plant-name"></p>
+          <p class="text-sm leading-relaxed opacity-80" id="disease-desc"></p>
+        </div>
+      </div>
+
+      <!-- Info grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <!-- Symptoms -->
+        <div class="info-card rounded-2xl p-6">
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="card-icon">🔍</span>
+            <span data-en="Symptoms" data-ne="लक्षणहरू">Symptoms</span>
+          </h3>
+          <ul class="space-y-2" id="symptoms-list"></ul>
+        </div>
+        <!-- Causes -->
+        <div class="info-card rounded-2xl p-6">
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <span class="card-icon">⚗️</span>
+            <span data-en="Causes" data-ne="कारणहरू">Causes</span>
+          </h3>
+          <ul class="space-y-2" id="causes-list"></ul>
+        </div>
+      </div>
+
+      <!-- Treatment Tabs -->
+      <div class="treatment-card rounded-3xl p-6 md:p-8 mb-6">
+        <h3 class="font-bold text-xl mb-5 flex items-center gap-2">
+          <span>💊</span>
+          <span data-en="Treatment Solutions" data-ne="उपचार समाधानहरू">Treatment Solutions</span>
+        </h3>
+        <!-- Tabs -->
+        <div class="tab-bar flex gap-2 mb-6 overflow-x-auto pb-1">
+          <button class="tab-btn active" onclick="switchTab('organic')" id="tab-organic">
+            <span data-en="🌿 Organic" data-ne="🌿 जैविक">🌿 Organic</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('local')" id="tab-local">
+            <span data-en="🏡 Local Remedies" data-ne="🏡 स्थानीय उपचार">🏡 Local Remedies</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('chemical')" id="tab-chemical">
+            <span data-en="🧪 Chemical" data-ne="🧪 रासायनिक">🧪 Chemical</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('prevention')" id="tab-prevention">
+            <span data-en="🛡️ Prevention" data-ne="🛡️ रोकथाम">🛡️ Prevention</span>
+          </button>
+        </div>
+
+        <div id="tab-content-organic" class="tab-content"></div>
+        <div id="tab-content-local" class="tab-content hidden"></div>
+        <div id="tab-content-chemical" class="tab-content hidden"></div>
+        <div id="tab-content-prevention" class="tab-content hidden"></div>
+      </div>
+
+      <!-- Scan again -->
+      <div class="text-center">
+        <button onclick="resetScan()" class="cta-primary px-8 py-4 rounded-2xl font-semibold transition-all">
+          <span data-en="🔄 Scan Another Plant" data-ne="🔄 अर्को बाली स्क्यान गर्नुस्">🔄 Scan Another Plant</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPERT SECTION ===== -->
+  <section id="expert-section" class="hidden py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="expert-card rounded-3xl p-8 text-center">
+        <div class="expert-icon-wrap w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">👨‍🌾</div>
+        <h2 class="font-extrabold text-2xl md:text-3xl mb-3" data-en="Connect to an Expert" data-ne="विशेषज्ञसँग जोडिनुस्">Connect to an Expert</h2>
+        <p class="text-base opacity-70 mb-8 max-w-md mx-auto" 
+           data-en="The AI couldn't confidently identify this disease. Let a real agricultural expert take a look."
+           data-ne="AI ले यो रोग पक्का गर्न सकेन। एक वास्तविक कृषि विशेषज्ञलाई हेर्न दिनुस्।">
+          The AI couldn't confidently identify this disease. Let a real agricultural expert take a look.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <a href="https://wa.me/9779841000000" target="_blank" class="expert-contact-btn rounded-2xl p-5 flex flex-col items-center gap-3 transition-all">
+            <span class="text-3xl">💬</span>
+            <span class="font-semibold" data-en="WhatsApp Expert" data-ne="WhatsApp विशेषज्ञ">WhatsApp Expert</span>
+            <span class="text-xs opacity-60">+977 984-100-0000</span>
+          </a>
+          <a href="tel:+9771234567890" class="expert-contact-btn rounded-2xl p-5 flex flex-col items-center gap-3 transition-all">
+            <span class="text-3xl">📞</span>
+            <span class="font-semibold" data-en="Call Helpline" data-ne="हेल्पलाइन कल गर्नुस्">Call Helpline</span>
+            <span class="text-xs opacity-60">+977 123-456-7890</span>
+          </a>
+          <a href="mailto:help@kisaanai.np" class="expert-contact-btn rounded-2xl p-5 flex flex-col items-center gap-3 transition-all">
+            <span class="text-3xl">📧</span>
+            <span class="font-semibold" data-en="Send Email" data-ne="इमेल पठाउनुस्">Send Email</span>
+            <span class="text-xs opacity-60">help@kisaanai.np</span>
+          </a>
+        </div>
+        <!-- Community Form -->
+        <div class="community-form rounded-2xl p-6 text-left">
+          <h3 class="font-bold text-lg mb-4" data-en="Ask the Farmer Community" data-ne="किसान समुदायलाई सोध्नुस्">Ask the Farmer Community</h3>
+          <div class="space-y-3">
+            <input type="text" id="form-name" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Your name / तपाईंको नाम" />
+            <input type="text" id="form-location" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="District / जिल्ला" />
+            <textarea id="form-msg" rows="3" class="form-input w-full rounded-xl px-4 py-3 text-sm resize-none" placeholder="Describe the problem / समस्या वर्णन गर्नुस्"></textarea>
+            <button onclick="submitExpertForm()" class="cta-primary w-full py-3 rounded-xl font-semibold transition-all">
+              <span data-en="Submit to Community" data-ne="समुदायमा पठाउनुस्">Submit to Community</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer-section py-14 px-4 mt-10">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div>
+          <div class="footer-logo font-extrabold text-2xl mb-2">KisaanAI 🌾</div>
+          <p class="text-sm opacity-60 max-w-xs" data-en="Empowering Nepali farmers with AI-powered disease detection and affordable treatment solutions." data-ne="AI-सञ्चालित रोग पत्ता लगाउने र सस्तो उपचार समाधानले नेपाली किसानहरूलाई सशक्त बनाउँदैछ।">Empowering Nepali farmers with AI-powered disease detection and affordable treatment solutions.</p>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <p class="text-xs opacity-40" data-en="Built for Nepal Hackathon 2025" data-ne="नेपाल ह्याकाथन २०२५ का लागि निर्मित">Built for Nepal Hackathon 2025</p>
+          <p class="text-xs opacity-40">Made with ❤️ for Nepali Farmers</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Hidden camera input -->
+  <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(event)" />
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 toast-msg px-6 py-3 rounded-2xl text-sm font-medium shadow-xl max-w-xs text-center"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
