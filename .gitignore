@@ -13,3 +13,4 @@ data/db.db
 .DS_Store
 Thumbs.db
 
+backend/.env

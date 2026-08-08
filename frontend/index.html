@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Krishi AI — Plant Disease Diagnosis</title>
+<meta name="description" content="Photograph a diseased plant and get an instant bilingual diagnosis report: disease, severity, cause, remedies, and prevention." />
+
+<!-- Fonts: Fraunces (display), Inter (body/UI), IBM Plex Mono (data/report figures) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tailwind (utility layout) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          husk: '#F4F7EC',
+          ink: '#1E2A18',
+          leaf: { DEFAULT: '#2F6B3C', dark: '#1F4B29', light: '#DCEBD8' },
+          marigold: { DEFAULT: '#E2A537', dark: '#B9821F' },
+          rust: { DEFAULT: '#C1443C', light: '#F6DEDB' },
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'serif'],
+          sans: ['"Inter"', '"Noto Sans Devanagari"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body class="bg-husk text-ink font-sans antialiased">
+
+<!-- ================= HEADER ================= -->
+<header class="sticky top-0 z-40 border-b border-ink/10 bg-husk/90 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <div class="flex items-center gap-3">
+      <span class="leaf-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="30" height="30" fill="none">
+          <path d="M8 40C8 22 22 8 40 8C40 26 26 40 8 40Z" fill="#2F6B3C"/>
+          <path d="M9 39C16 26 26 16 39 9" stroke="#DCEBD8" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div class="leading-tight">
+        <p class="font-display text-lg font-semibold tracking-tight">Krishi <span class="text-leaf">AI</span></p>
+        <p class="text-[11px] uppercase tracking-[0.14em] text-ink/50" data-i18n="brand_subtitle">Plant health, diagnosed in seconds</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1 rounded-full border border-ink/15 bg-white p-1" role="group" aria-label="Language">
+      <button type="button" data-lang-btn="en" class="lang-btn lang-btn--active" aria-pressed="true">EN</button>
+      <button type="button" data-lang-btn="ne" class="lang-btn" aria-pressed="false">ने</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ================= HERO / UPLOAD ================= -->
+  <section class="mx-auto grid max-w-6xl gap-10 px-5 py-10 md:py-14 lg:grid-cols-2 lg:items-start">
+
+    <!-- Left: pitch + uploader -->
+    <div>
+      <p class="mb-3 inline-flex items-center gap-2 rounded-full bg-leaf-light px-3 py-1 text-xs font-semibold uppercase tracking-wide text-leaf-dark" data-i18n="hero_eyebrow">
+        For Nepal's farmers
+      </p>
+      <h1 class="font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+        <span data-i18n="hero_title_1">Show us the leaf.</span><br />
+        <span class="text-leaf" data-i18n="hero_title_2">We'll tell you what's wrong.</span>
+      </h1>
+      <p class="mt-4 max-w-md text-base text-ink/70" data-i18n="hero_body">
+        Upload or capture a photo of a sick plant. Krishi AI identifies the plant, diagnoses the disease, and gives you cheap local and chemical remedies — in English or Nepali.
+      </p>
+
+      <!-- Dropzone -->
+      <div id="dropzone" class="dropzone mt-7">
+        <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" class="hidden" />
+
+        <div id="dropzone-empty" class="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" class="text-leaf">
+            <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <p class="font-medium" data-i18n="upload_title">Drop a leaf photo here</p>
+          <p class="text-sm text-ink/55" data-i18n="upload_hint">or tap to choose / take a photo · JPG, PNG, WEBP · up to 8 MB</p>
+        </div>
+
+        <div id="dropzone-preview" class="hidden p-4">
+          <div class="scan-frame">
+            <img id="preview-img" alt="" />
+            <div id="scan-overlay" class="scan-overlay hidden"><div class="scan-line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <button id="diagnose-btn" type="button" disabled class="btn-primary" data-i18n="diagnose_button">
+          Diagnose plant
+        </button>
+        <button id="reset-btn" type="button" class="hidden btn-ghost" data-i18n="new_scan_button">
+          New scan
+        </button>
+        <span id="analyzing-label" class="hidden items-center gap-2 text-sm font-medium text-leaf-dark" data-i18n="analyzing_text">
+          Analyzing photo…
+        </span>
+      </div>
+
+      <div id="error-banner" class="error-banner hidden" role="alert"></div>
+    </div>
+
+    <!-- Right: what you get -->
+    <aside class="rounded-2xl border border-ink/10 bg-white p-6 lg:mt-2">
+      <p class="font-display text-lg font-semibold" data-i18n="whatyouget_title">Every report includes</p>
+      <ul class="mt-4 space-y-4">
+        <li class="flex gap-3">
+          <span class="step-num">01</span>
+          <div><p class="font-medium" data-i18n="feat_id_title">Plant &amp; disease identification</p><p class="text-sm text-ink/60" data-i18n="feat_id_body">Name, diagnosis, and severity at a glance</p></div>
+        </li>
+        <li class="flex gap-3">
+          <span class="step-num">02</span>
+          <div><p class="font-medium" data-i18n="feat_conf_title">Confidence score</p><p class="text-sm text-ink/60" data-i18n="feat_conf_body">How sure the AI is, so you can judge for yourself</p></div>
+        </li>
+        <li class="flex gap-3">
+          <span class="step-num">03</span>
+          <div><p class="font-medium" data-i18n="feat_remedy_title">Chemical &amp; local remedies</p><p class="text-sm text-ink/60" data-i18n="feat_remedy_body">Including cheap, home-available options</p></div>
+        </li>
+        <li class="flex gap-3">
+          <span class="step-num">04</span>
+          <div><p class="font-medium" data-i18n="feat_prevent_title">Prevention tips</p><p class="text-sm text-ink/60" data-i18n="feat_prevent_body">Keep it from happening again</p></div>
+        </li>
+      </ul>
+    </aside>
+  </section>
+
+  <!-- ================= NOT-A-PLANT NOTICE ================= -->
+  <section id="notice-section" class="mx-auto hidden max-w-3xl px-5 pb-16">
+    <div class="rounded-2xl border border-marigold/40 bg-marigold/10 p-6 text-center">
+      <p class="font-display text-xl font-semibold" data-i18n="notice_title">We couldn't find a plant in that photo</p>
+      <p id="notice-text" class="mt-2 text-sm text-ink/70"></p>
+    </div>
+  </section>
+
+  <!-- ================= REPORT ================= -->
+  <section id="report-section" class="mx-auto hidden max-w-6xl px-5 pb-20">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4 border-t border-ink/10 pt-8">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-ink/45" data-i18n="report_eyebrow">Diagnosis report</p>
+        <h2 id="report-plant-name" class="font-display text-3xl font-semibold tracking-tight">—</h2>
+        <p id="report-disease-name" class="mt-1 text-lg text-ink/70">—</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="severity-badge" class="severity-badge">—</span>
+      </div>
+    </div>
+
+    <!-- Confidence -->
+    <div class="mb-8 rounded-2xl border border-ink/10 bg-white p-5">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-semibold" data-i18n="section_confidence">Confidence score</p>
+        <p id="confidence-value" class="font-mono text-sm font-semibold text-leaf-dark">0%</p>
+      </div>
+      <div class="confidence-track mt-3">
+        <div id="confidence-fill" class="confidence-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Healthy message -->
+    <div id="healthy-banner" class="mb-8 hidden rounded-2xl border border-leaf/30 bg-leaf-light p-6 text-center">
+      <p class="font-display text-xl font-semibold text-leaf-dark" data-i18n="healthy_title">Good news — this plant looks healthy</p>
+      <p class="mt-1 text-sm text-ink/70" data-i18n="healthy_body">No signs of disease were detected. Keep up these habits to keep it that way:</p>
+    </div>
+
+    <!-- Diseased grid -->
+    <div id="disease-grid" class="grid gap-5 md:grid-cols-2">
+      <div class="report-card">
+        <p class="report-card__label" data-i18n="section_cause">Likely cause</p>
+        <p id="report-cause" class="report-card__body"></p>
+      </div>
+      <div class="report-card">
+        <p class="report-card__label" data-i18n="section_chemical">Chemical remedies</p>
+        <ul id="report-chemical" class="report-list"></ul>
+      </div>
+      <div class="report-card">
+        <p class="report-card__label" data-i18n="section_local">Local remedies (cheap)</p>
+        <ul id="report-local" class="report-list"></ul>
+      </div>
+      <div class="report-card">
+        <p class="report-card__label" data-i18n="section_prevention">Prevention</p>
+        <ul id="report-prevention" class="report-list"></ul>
+      </div>
+    </div>
+
+    <!-- Healthy-only prevention -->
+    <div id="healthy-prevention-card" class="report-card hidden">
+      <p class="report-card__label" data-i18n="section_prevention">Prevention</p>
+      <ul id="report-prevention-healthy" class="report-list"></ul>
+    </div>
+
+    <p id="report-notes" class="mt-6 hidden rounded-xl bg-husk px-4 py-3 text-sm text-ink/60"></p>
+
+    <p class="mt-8 text-xs text-ink/45" data-i18n="disclaimer">
+      Krishi AI gives an AI-generated estimate to guide your next step. For valuable crops or uncertain cases, please confirm with your local agrovet or agriculture extension office before applying chemicals.
+    </p>
+  </section>
+</main>
+
+<footer class="border-t border-ink/10 py-8">
+  <div class="mx-auto max-w-6xl px-5 text-center text-xs text-ink/45">
+    <p data-i18n="footer_text">Krishi AI · Built for smallholder farmers · Powered by Gemini 3.6 Flash</p>
+  </div>
+</footer>
+
+<script src="./translations.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
